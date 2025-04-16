@@ -1,21 +1,21 @@
-#pragma once
+ï»¿#pragma once
 
 struct Matrix4x4 {
 	float m[4][4];
 };
 
-// 1.s—ñ‚Ì‰Á–@
+// 1.è¡Œåˆ—ã®åŠ æ³•
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
-// 2.s—ñ‚ÌŒ¸–@
+// 2.è¡Œåˆ—ã®æ¸›æ³•
 Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
-// 3.s—ñ‚ÌÏ
+// 3.è¡Œåˆ—ã®ç©
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-// 4.‹ts—ñ
-Matrix4x4 Inverse(const Matrix4x4& m);
-// 5.“]’us—ñ
-Matrix4x4 Transpose(const Matrix4x4& m);
-// 6.’PˆÊs—ñ‚Ìì¬
-Matrix4x4 MakeIdentity4x4();
-// 4x4s—ñ‚Ì”’l•\¦ŠÖ”
-void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, char* name);
+// 4.é€†è¡Œåˆ—
+//Matrix4x4 Inverse(const Matrix4x4& matrix);
+// 5.è»¢ç½®è¡Œåˆ—
+Matrix4x4 Transpose(const Matrix4x4& matrix);
+// 6.å˜ä½è¡Œåˆ—ã®ä½œæˆ
+/*Matrix4x4 MakeIdentity4x4(); */
+// 4x4è¡Œåˆ—ã®æ•°å€¤è¡¨ç¤ºé–¢æ•°
+void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name);
 
