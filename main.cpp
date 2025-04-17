@@ -39,9 +39,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 resultAdd = Add(m1, m2);
 		Matrix4x4 resultSubtract = Subtract(m1, m2);
 		Matrix4x4 resultMultiply = Multiply(m1, m2);
-
+		Matrix4x4 resultInverse1 = Inverse(m1);
+		Matrix4x4 resultInverse2 = Inverse(m2);
 		Matrix4x4 resultTransposeM1 = Transpose(m1);
 		Matrix4x4 resultTransposeM2 = Transpose(m2);
+		Matrix4x4 resultIdentity = MakeIdentity4x4();
 
 		///
 		/// ↑更新処理ここまで
@@ -54,9 +56,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		MatrixScreenPrintf(0, 0, resultAdd, "Add");
 		MatrixScreenPrintf(0, 100, resultSubtract, "Subtract");
 		MatrixScreenPrintf(0, 200, resultMultiply, "Multiply");
-
+		MatrixScreenPrintf(0, 300, resultInverse1, "InverseM1");
+		MatrixScreenPrintf(0, 400, resultInverse2, "InverseM2");
 		MatrixScreenPrintf(300, 0, resultTransposeM1, "transposeM1");
 		MatrixScreenPrintf(300, 100, resultTransposeM2, "transposeM2");
+		MatrixScreenPrintf(300, 200, resultIdentity, "identity");
 
 		///
 		/// ↑描画処理ここまで

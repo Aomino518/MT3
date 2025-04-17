@@ -38,13 +38,39 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 }
 
 // 4.逆行列
-/*Matrix4x4 Inverse(const Matrix4x4& matrix) {
-	float det = matrix.m[0][0] * matrix.m[1][1] * matrix.m[2][2] * matrix.m[3][3] +
-		matrix.m[0][1] * matrix.m[1][2] * matrix.m[2][0] +
-		matrix.m[0][2] * matrix.m[1][0] * matrix.m[2][1] -
-		matrix.m[0][2] * matrix.m[1][1] * matrix.m[2][0] -
-		matrix.m[0][1] * matrix.m[1][0] * matrix.m[2][2] -
-		matrix.m[0][0] * matrix.m[1][2] * matrix.m[2][1];
+Matrix4x4 Inverse(const Matrix4x4& matrix) {
+	Matrix4x4 cofactor; // 余因子行列
+
+	for (int row = 0; row < 4; ++row) {
+		for (int col = 0; col < 4; ++col) {
+			float sub[3][3];
+			int subi = 0;
+			for (int i = 0; i < 4; ++i) {
+				if (i == row) continue;
+				int subj = 0;
+				for (int j = 0; j < 4; ++j) {
+					if (j == col) continue;
+					sub[subi][subj] = matrix.m[i][j];
+					++subj;
+				}
+				++subi;
+			}
+
+			// 小行列
+			float det3 = Determinant3x3(
+				sub[0][0], sub[0][1], sub[0][2],
+				sub[1][0], sub[1][1], sub[1][2],
+				sub[2][0], sub[2][1], sub[2][2]
+			);
+
+			cofactor.m[row][col] = ((row + col) % 2 == 0 ? 1 : -1) * det3;
+		}
+	}
+
+	float det = 0.0f;
+	for (int i = 0; i < 4; ++i) {
+		det += matrix.m[0][i] * cofactor.m[0][i];
+	}
 
 	if (det == 0) {
 		Novice::ScreenPrintf(300, 300, "逆行列は存在しない");
@@ -55,20 +81,14 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
 	float invDet = 1.0f / det;
 
-	result.m[0][0] = (matrix.m[1][1] * matrix.m[2][2] - matrix.m[1][2] * matrix.m[2][1]) * invDet;
-	result.m[0][1] = (matrix.m[0][2] * matrix.m[2][1] - matrix.m[0][1] * matrix.m[2][2]) * invDet;
-	result.m[0][2] = (matrix.m[0][1] * matrix.m[1][2] - matrix.m[0][2] * matrix.m[1][1]) * invDet;
-
-	result.m[1][0] = (matrix.m[1][2] * matrix.m[2][0] - matrix.m[1][0] * matrix.m[2][2]) * invDet;
-	result.m[1][1] = (matrix.m[0][0] * matrix.m[2][2] - matrix.m[0][2] * matrix.m[2][0]) * invDet;
-	result.m[1][2] = (matrix.m[0][2] * matrix.m[1][0] - matrix.m[0][0] * matrix.m[1][2]) * invDet;
-
-	result.m[2][0] = (matrix.m[1][0] * matrix.m[2][1] - matrix.m[1][1] * matrix.m[2][0]) * invDet;
-	result.m[2][1] = (matrix.m[0][1] * matrix.m[2][0] - matrix.m[0][0] * matrix.m[2][1]) * invDet;
-	result.m[2][2] = (matrix.m[0][0] * matrix.m[1][1] - matrix.m[0][1] * matrix.m[1][0]) * invDet;
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			result.m[i][j] = cofactor.m[j][i] * invDet;
+		}
+	}
 
 	return result;
-}*/
+}
 
 // 5.転置行列
 Matrix4x4 Transpose(const Matrix4x4& matrix) {
@@ -82,9 +102,20 @@ Matrix4x4 Transpose(const Matrix4x4& matrix) {
 }
 
 // 6.単位行列の作成
-/*Matrix4x4 MakeIdentity4x4() {
+Matrix4x4 MakeIdentity4x4() {
+	Matrix4x4 result;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[j][i] = 0.0f;
+		}
+	}
 
-}*/
+	for (int i = 0; i < 4; i++) {
+		result.m[i][i] = 1.0f;
+	}
+
+	return result;
+}
 
 static const int kRowHeight = 20;
 static const int kColumnWide = 60;
