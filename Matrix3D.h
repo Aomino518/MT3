@@ -19,3 +19,7 @@ Matrix4x4 MakeIdentity4x4();
 // 4x4行列の数値表示関数
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name);
 
+float Determinant3x3(
+	float a11, float a12, float a13,
+	float a21, float a22, float a23,
+	float a31, float a32, float a33);
