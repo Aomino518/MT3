@@ -28,6 +28,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		// 行列の計算
 		Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
 		Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
 		Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
@@ -41,6 +42,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		// 行列の値表示
 		MatrixScreenPrintf(0, 0, rotateXMatrix, "rotateXMatrix");
 		MatrixScreenPrintf(0, 100, rotateYMatrix, "rotateYMatrix");
 		MatrixScreenPrintf(0, 200, rotateZMatrix, "rotateYMatrix");
