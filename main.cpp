@@ -36,6 +36,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		// 行列を作成
 		Vector3 transfromed = Transform(point, transformMatrix);
 		Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 		Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
@@ -48,6 +49,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓描画処理ここから
 		///
 
+		// 数値表示
 		VectorScreenPrintf(0, 0, transfromed, "transfromed");
 		MatrixScreenPrintf(0, 20, translateMatrix, "translateMatrix");
 		MatrixScreenPrintf(0, 120, scaleMatrix, "scaleMatrix");

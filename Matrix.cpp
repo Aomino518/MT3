@@ -38,7 +38,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return result;
 }
 
-// 3. 座標変換
+// 3.座標変換
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 result;
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
@@ -58,6 +58,7 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
 
 static const int kRowHeight = 20;
 static const int kColumnWide = 60;
+// 行列の数値を表示する関数
 void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name) {
 	Novice::ScreenPrintf(x, y, "%s", name);
 
@@ -72,6 +73,7 @@ void MatrixScreenPrintf(int x, int y, const Matrix4x4& matrix, const char* name)
 	}
 }
 
+// ベクトルの値を表示する関数
 void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* name) {
 		Novice::ScreenPrintf(x, y, "%6.02f", vector.x);
 		Novice::ScreenPrintf(x + kColumnWide, y, "%6.02f", vector.y);
