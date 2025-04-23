@@ -131,6 +131,22 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return result;
 }
 
+// 単位行列
+Matrix4x4 MakeIdentity4x4() {
+	Matrix4x4 result;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			result.m[j][i] = 0.0f;
+		}
+	}
+
+	for (int i = 0; i < 4; i++) {
+		result.m[i][i] = 1.0f;
+	}
+
+	return result;
+}
+
 // 3次元アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
