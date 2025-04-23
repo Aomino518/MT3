@@ -9,21 +9,21 @@ struct Vector3 {
 };
 
 // <summary>
-/// 1.X軸回転行列関数
+/// X軸回転行列関数
 /// </summary>
 /// <param name="radian">ラジアン</param>
 /// <returns>X軸回転行列</returns>
 Matrix4x4 MakeRotateXMatrix(float radian);
 
 /// <summary>
-/// 2.Y軸回転行列関数
+/// Y軸回転行列関数
 /// </summary>
 /// <param name="radian">ラジアン</param>
 /// <returns>Y軸回転行列</returns>
 Matrix4x4 MakeRotateYMatrix(float radian);
 
 /// <summary>
-/// 3.Z軸回転行列関数
+/// Z軸回転行列関数
 /// </summary>
 /// <param name="radian">ラジアン</param>
 /// <returns>Z軸回転行列</returns>
@@ -38,14 +38,14 @@ Matrix4x4 MakeRotateZMatrix(float radian);
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 /// <summary>
-///  1. 平行移動行列関数
+/// 平行移動行列関数
 /// </summary>
 /// <param name="translate">方向</param>
 /// <returns>平行移動行列</returns>
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
 /// <summary>
-/// 2. 拡大縮小行列関数
+/// 拡大縮小行列関数
 /// </summary>
 /// <param name="scale">スケール</param>
 /// <returns>拡大縮小行列</returns>
