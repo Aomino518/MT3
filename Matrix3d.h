@@ -51,9 +51,13 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 /// <returns>拡大縮小行列</returns>
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
-Matrix4x4 MakeIdentity4x4();
-
-// 3次元アフィン変換行列
+/// <summary>
+/// 3次元アフィン変換行列
+/// </summary>
+/// <param name="scale">拡縮行列</param>
+/// <param name="rotate">回転行列</param>
+/// <param name="translate">平行移動行列</param>
+/// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
 /// <summary>

@@ -2,7 +2,7 @@
 #include <cmath>
 #include <Novice.h>
 
-// 1.X軸回転行列
+// X軸回転行列
 Matrix4x4 MakeRotateXMatrix(float radian) {
 	Matrix4x4 result;
 	result.m[0][0] = 1.0f;
@@ -28,7 +28,7 @@ Matrix4x4 MakeRotateXMatrix(float radian) {
 	return result;
 }
 
-// 2.Y軸回転行列
+// Y軸回転行列
 Matrix4x4 MakeRotateYMatrix(float radian) {
 	Matrix4x4 result;
 	result.m[0][0] = std::cos(radian);
@@ -54,7 +54,7 @@ Matrix4x4 MakeRotateYMatrix(float radian) {
 	return result;
 }
 
-// 3.Z軸回転行列
+// Z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian) {
 	Matrix4x4 result;
 	result.m[0][0] = std::cos(radian);
@@ -91,10 +91,11 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 			}
 		}
 	}
+
 	return result;
 }
 
-// 1. 平行移動行列
+// 平行移動行列
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	Matrix4x4 result;
 	for (int i = 0; i < 4; i++) {
@@ -114,7 +115,7 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	return result;
 }
 
-// 2. 拡大縮小行列
+// 拡大縮小行列
 Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	Matrix4x4 result;
 	for (int i = 0; i < 4; i++) {
@@ -131,22 +132,6 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	return result;
 }
 
-// 単位行列
-Matrix4x4 MakeIdentity4x4() {
-	Matrix4x4 result;
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			result.m[j][i] = 0.0f;
-		}
-	}
-
-	for (int i = 0; i < 4; i++) {
-		result.m[i][i] = 1.0f;
-	}
-
-	return result;
-}
-
 // 3次元アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
@@ -155,8 +140,7 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 	Matrix4x4 rotateYMatrix = MakeRotateYMatrix(rotate.y);
 	Matrix4x4 rotateZMatrix = MakeRotateZMatrix(rotate.z);
 	Matrix4x4 rotateXYZMatrix = Multiply(rotateXMatrix, Multiply(rotateYMatrix, rotateZMatrix));
-
-	Matrix4x4 scaleRot = Multiply(rotateXYZMatrix, scaleMatrix);
+	Matrix4x4 scaleRot = Multiply(scaleMatrix, rotateXYZMatrix);
 	Matrix4x4 resultMatrix = Multiply(scaleRot, translateMatrix);
 
 	return resultMatrix;
