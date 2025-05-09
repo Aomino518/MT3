@@ -1,4 +1,5 @@
 #include <Novice.h>
+#include <imgui.h>
 
 const char kWindowTitle[] = "LE2C_26_モリ_アオト";
 
