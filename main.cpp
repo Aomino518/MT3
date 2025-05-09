@@ -1,5 +1,6 @@
 #include <Novice.h>
 #include <imgui.h>
+#include "Matrix.h"
 
 const char kWindowTitle[] = "LE2C_26_モリ_アオト";
 
@@ -25,6 +26,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+
+		// カメラの位置をワールド空間に変換する行列
+		Matrix4x4 cameraMatrix = MakeAffineMatrix({ 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 0.0f }, cameraPosition);
+		// ビュー行列はカメラ行列の逆行列
+		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
+		// 透視投影行列
+		Matrix4x4 projectionMatrix = MakePerspectiveFovMatrix(0.45f, float(kWindowWidth) / float(kWindowHeight), 0.1f, 100.0f);
+		// ビュープロジェクション合成行列
+		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
+		// ビューポート変換
+		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
 		///
 		/// ↑更新処理ここまで
