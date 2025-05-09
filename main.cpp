@@ -1,6 +1,6 @@
 #include <Novice.h>
 
-const char kWindowTitle[] = "LE2C_25_モリ_アオト";
+const char kWindowTitle[] = "LE2C_26_モリ_アオト";
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
