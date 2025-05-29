@@ -1,5 +1,5 @@
-#pragma once
-
+ï»¿#pragma once
+#include <cstdint>
 
 struct Matrix4x4 {
 	float m[4][4];
@@ -9,97 +9,104 @@ struct Vector3 {
 	float x, y, z;
 };
 
+struct Vector4 {
+	float x, y, z, w;
+};
+
+struct Sphere {
+	Vector3 center;
+	float radius;
+};
+
 /// <summary>
-/// ³Ë‰es—ñ‚Ìì¬ŠÖ”
+/// æ­£å°„å½±è¡Œåˆ—ã®ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="left">¶ã‚ÌXÀ•W</param>
-/// <param name="top">¶ã‚ÌYÀ•W</param>
-/// <param name="right">‰E‰º‚ÌXÀ•W</param>
-/// <param name="bottom">‰E‰º‚ÌYÀ•W</param>
-/// <returns>³Ë‰es—ñ</returns>
+/// <param name="left">å·¦ä¸Šã®Xåº§æ¨™</param>
+/// <param name="top">å·¦ä¸Šã®Yåº§æ¨™</param>
+/// <param name="right">å³ä¸‹ã®Xåº§æ¨™</param>
+/// <param name="bottom">å³ä¸‹ã®Yåº§æ¨™</param>
+/// <returns>æ­£å°„å½±è¡Œåˆ—</returns>
 Matrix4x4 MakeOrthographicMatrix(float left, float top, float right, float bottom, float nearClip, float farClip);
 
 /// <summary>
-/// “§‹“Š‰es—ñ‚Ìì¬ŠÖ”
+/// é€è¦–æŠ•å½±è¡Œåˆ—ã®ä½œæˆé–¢æ•°
 /// </summary>
-/// <param name="fovY">‰æŠpY</param>
-/// <param name="aspectRatio">ƒAƒXƒyƒNƒg”ä</param>
-/// <param name="nearClip">‹ß•½–Ê‚Ö‚Ì‹——£</param>
-/// <param name="farClip">‰“•½–Ê‚Ö‚Ì‹——£</param>
-/// <returns>“§‹“Š‰es—ñ</returns>
+/// <param name="fovY">ç”»è§’Y</param>
+/// <param name="aspectRatio">ã‚¢ã‚¹ãƒšã‚¯ãƒˆæ¯”</param>
+/// <param name="nearClip">è¿‘å¹³é¢ã¸ã®è·é›¢</param>
+/// <param name="farClip">é å¹³é¢ã¸ã®è·é›¢</param>
+/// <returns>é€è¦–æŠ•å½±è¡Œåˆ—</returns>
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
 
 /// <summary>
-/// ƒrƒ…[ƒ|[ƒg‚É•ÏŠ·‚·‚éŠÖ”
+/// ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆã«å¤‰æ›ã™ã‚‹é–¢æ•°
 /// </summary>
-/// <param name="left">¶ã‚ÌXÀ•W</param>
-/// <param name="top">¶ã‚ÌYÀ•W</param>
-/// <param name="width">‰E‰º‚ÌXÀ•W</param>
-/// <param name="height">‰E‰º‚ÌYÀ•W</param>
-/// <param name="minDepth">Å¬[“x’l</param>
-/// <param name="maxDepth">Å‘å[“x’l</param>
-/// <returns>ƒrƒ…[ƒ|[ƒgs—ñ</returns>
+/// <param name="left">å·¦ä¸Šã®Xåº§æ¨™</param>
+/// <param name="top">å·¦ä¸Šã®Yåº§æ¨™</param>
+/// <param name="width">å³ä¸‹ã®Xåº§æ¨™</param>
+/// <param name="height">å³ä¸‹ã®Yåº§æ¨™</param>
+/// <param name="minDepth">æœ€å°æ·±åº¦å€¤</param>
+/// <param name="maxDepth">æœ€å¤§æ·±åº¦å€¤</param>
+/// <returns>ãƒ“ãƒ¥ãƒ¼ãƒãƒ¼ãƒˆè¡Œåˆ—</returns>
 Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth);
 
 /// <summary>
-/// s—ñ‚ÌÏ‚ğ‹‚ß‚éŠÖ”
+/// è¡Œåˆ—ã®ç©ã‚’æ±‚ã‚ã‚‹é–¢æ•°
 /// </summary>
-/// <param name="m1">s—ñ1</param>
-/// <param name="m2">s—ñ2</param>
-/// <returns>s—ñ‚ÌÏ</returns>
+/// <param name="m1">è¡Œåˆ—1</param>
+/// <param name="m2">è¡Œåˆ—2</param>
+/// <returns>è¡Œåˆ—ã®ç©</returns>
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
 
 /// <summary>
-/// •½sˆÚ“®s—ñŠÖ”
+/// å¹³è¡Œç§»å‹•è¡Œåˆ—é–¢æ•°
 /// </summary>
-/// <param name="translate">•ûŒü</param>
-/// <returns>•½sˆÚ“®s—ñ</returns>
+/// <param name="translate">æ–¹å‘</param>
+/// <returns>å¹³è¡Œç§»å‹•è¡Œåˆ—</returns>
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 
 /// <summary>
-/// ‹ts—ñ
+/// é€†è¡Œåˆ—
 /// </summary>
 /// <param name="matrix"></param>
 /// <returns></returns>
 Matrix4x4 Inverse(const Matrix4x4& matrix);
 
-// X²‰ñ“]s—ñ
+// Xè»¸å›è»¢è¡Œåˆ—
 Matrix4x4 MakeRotateXMatrix(float radian);
 
-// Y²‰ñ“]s—ñ
+// Yè»¸å›è»¢è¡Œåˆ—
 Matrix4x4 MakeRotateYMatrix(float radian);
 
-// Z²‰ñ“]s—ñ
+// Zè»¸å›è»¢è¡Œåˆ—
 Matrix4x4 MakeRotateZMatrix(float radian);
 
-// Šg‘åk¬s—ñ
+// æ‹¡å¤§ç¸®å°è¡Œåˆ—
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 
-// 3ŸŒ³ƒAƒtƒBƒ“•ÏŠ·s—ñ
+// 3æ¬¡å…ƒã‚¢ãƒ•ã‚£ãƒ³å¤‰æ›è¡Œåˆ—
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 
-// À•W•ÏŠ·
+// åº§æ¨™å¤‰æ›
 Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 
 /// <summary>
-/// ƒNƒƒXÏ‚ğ‹‚ß‚éŠÖ”
+/// ã‚¯ãƒ­ã‚¹ç©ã‚’æ±‚ã‚ã‚‹é–¢æ•°
 /// </summary>
-/// <param name="v1">1‚Â–Ú‚ÌƒxƒNƒ^[</param>
-/// <param name="v2">2‚Â–Ú‚ÌƒxƒNƒ^[</param>
-/// <returns>ƒNƒƒXÏ</returns>
+/// <param name="v1">1ã¤ç›®ã®ãƒ™ã‚¯ã‚¿ãƒ¼</param>
+/// <param name="v2">2ã¤ç›®ã®ãƒ™ã‚¯ã‚¿ãƒ¼</param>
+/// <returns>ã‚¯ãƒ­ã‚¹ç©</returns>
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
-
-/// <summary>
-/// ƒxƒNƒ^[‚Ì”’l‚ğ•\¦‚·‚éŠÖ”
-/// </summary>
-/// <param name="x">XÀ•W</param>
-/// <param name="y">YÀ•W</param>
-/// <param name="cross">•\¦‚µ‚½‚¢ƒxƒNƒ^[</param>
-/// <param name="name">ƒxƒNƒ^[–¼</param>
-/// <returns></returns>
-void VectorScreenPrintf(int x, int y, Vector3& cross, const char* name);
 
 float Determinant3x3(
 	float a11, float a12, float a13,
 	float a21, float a22, float a23,
 	float a31, float a32, float a33);
+
+void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
+
+void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+Vector3 GetSpherePoint(float radius, float lat, float lon);
+
+Vector3 operator+(const Vector3& v1, const Vector3& v2);
