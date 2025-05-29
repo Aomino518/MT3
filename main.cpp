@@ -14,14 +14,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	char keys[256] = {0};
 	char preKeys[256] = {0};
 
-	Vector3 rotate{0.2f, 0.0f, 0.0f};
-	Vector3 translate{0.0f, 0.0f, 0.0f};
-	Vector3 cameraPosition{0.0f, 2.0f, -7.0f};
-
-	static const int kWindowWidth = 1080;
-	static const int kWindowHeight = 720;
-
+	// カメラの回転
+	Vector3 cameraRotate{0.26f, 0.0f, 0.0f};
+	// カメラの位置
+	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
+	// 球の位置
 	Sphere sphere = { {0.0f, 0.0f, 0.0f}, 1.0f };
+
+	static const int kWindowWidth = 1280;
+	static const int kWindowHeight = 720;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -37,7 +38,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		// カメラの位置をワールド空間に変換する行列
-		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, rotate, cameraPosition);
+		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
 		// ビュー行列はカメラ行列の逆行列
 		Matrix4x4 viewMatrix = Inverse(cameraMatrix);
 		// 透視投影行列
@@ -62,8 +63,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("CameraPosition", (float*)&cameraPosition, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("CameraRotate", (float*)&rotate, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("CameraPosition", (float*)&cameraTranslate, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("CameraRotate", (float*)&cameraRotate, 0.01f, -50, 50, "%0.3f");
 		ImGui::DragFloat3("SphereCenter", (float*)&sphere.center, 0.01f, -50, 50, "%0.3f");
 		ImGui::DragFloat("SphereRadius", (float*)&sphere.radius, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();

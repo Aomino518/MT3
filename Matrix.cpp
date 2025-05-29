@@ -320,6 +320,7 @@ float Determinant3x3(
 		a13 * (a21 * a32 - a22 * a31);
 }
 
+// グリッドの描画
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix) {
 	const float kGridHalfWidth = 2.0f; // Gridの半分の幅
 	const uint32_t kSubdivision = 10; //分割数
@@ -361,6 +362,7 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 	}
 }
 
+// 球の描画
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color) {
 	const uint32_t kSubdivision = 16; // 16分割
 	const float kLonEvery = 2.0f * float(M_PI) / kSubdivision; // 経度

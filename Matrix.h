@@ -103,8 +103,20 @@ float Determinant3x3(
 	float a21, float a22, float a23,
 	float a31, float a32, float a33);
 
+/// <summary>
+/// グリッドを描画する関数
+/// </summary>
+/// <param name="viewProjectionMatrix">透視投影行列</param>
+/// <param name="viewportMatrix">ビューポート</param>
 void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix);
 
+/// <summary>
+/// 球を描画する関数
+/// </summary>
+/// <param name="sphere">球のインスタンスの情報</param>
+/// <param name="viewProjectionMatrix">透視投影行列</param>
+/// <param name="viewportMatrix">ビューポート</param>
+/// <param name="color">色</param>
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 Vector3 GetSpherePoint(float radius, float lat, float lon);
