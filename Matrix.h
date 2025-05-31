@@ -18,6 +18,21 @@ struct Sphere {
 	float radius;
 };
 
+struct Line {
+	Vector3 origin;
+	Vector3 diff;
+};
+
+struct Ray {
+	Vector3 origin;
+	Vector3 diff;
+};
+
+struct Segment {
+	Vector3 origin;
+	Vector3 diff;
+};
+
 /// <summary>
 /// 正射影行列の作成関数
 /// </summary>
@@ -122,3 +137,13 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 Vector3 GetSpherePoint(float radius, float lat, float lon);
 
 Vector3 operator+(const Vector3& v1, const Vector3& v2);
+
+/// <summary>
+/// 正射影ベクトルを求める関数
+/// </summary>
+/// <param name="v1">ベクトル1</param>
+/// <param name="v2">ベクトル2</param>
+/// <returns></returns>
+Vector3 Project(const Vector3& v1, const Vector3& v2);
+
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment);

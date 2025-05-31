@@ -404,3 +404,31 @@ Vector3 GetSpherePoint(float radius, float lat, float lon) {
 Vector3 operator+(const Vector3& v1, const Vector3& v2) {
 	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
+
+Vector3 Project(const Vector3& v1, const Vector3& v2)
+{
+	Vector3 result;
+	float ab = (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
+	float b2 = (v2.x * v2.x) + (v2.y * v2.y) + (v2.z * v2.z);
+	float scalar = ab / b2;
+	result.x = scalar * v2.x;
+	result.y = scalar * v2.y;
+	result.z = scalar * v2.z;
+	return result;
+}
+
+Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
+{
+	Vector3 result;
+	Vector3 cp;
+	cp.x = segment.origin.x + point.x;
+	cp.y = segment.origin.y + point.y;
+	cp.z = segment.origin.z + point.z;
+	
+	result.x = segment.diff.x - cp.x;
+	result.y = segment.diff.y - cp.y;
+	result.z = segment.diff.z - cp.z;
+	return result;
+}
+
+

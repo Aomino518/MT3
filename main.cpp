@@ -18,8 +18,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Vector3 cameraRotate{0.26f, 0.0f, 0.0f};
 	// カメラの位置
 	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
-	// 球の位置
-	Sphere sphere = { {0.0f, 0.0f, 0.0f}, 1.0f };
+
+	Segment segment = { {-2.0f, -1.0f, 0.0f}, {3.0f, 2.0f, 2.0f} };
+	Vector3 point = { -1.5f, 0.6f, 0.6f };
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
@@ -36,6 +37,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+
+		// pointを線分に射影したベクトル
+		Vector3 project = Project(Subtract())
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -58,8 +62,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		// 球の表示
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, 0x000000FF);
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
