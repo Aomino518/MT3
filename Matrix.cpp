@@ -2,6 +2,16 @@
 #include <Novice.h>
 #define _USE_MATH_DEFINES 
 #include <cmath>
+#include <algorithm>
+
+// 加算
+Vector3 Add(const Vector3& v1, const Vector3& v2) {
+	Vector3 result;
+	result.x = v1.x + v2.x;
+	result.y = v1.y + v2.y;
+	result.z = v1.z + v2.z;
+	return result;
+}
 
 // 減算
 Vector3 Subtract(const Vector3& v1, const Vector3& v2) {
@@ -413,6 +423,14 @@ Vector3 operator+(const Vector3& v1, const Vector3& v2) {
 	return { v1.x + v2.x, v1.y + v2.y, v1.z + v2.z };
 }
 
+Vector3 operator-(const Vector3& v1, const Vector3& v2) {
+	return { v1.x - v2.x, v1.y - v2.y, v1.z - v2.z };
+}
+
+Vector3 operator*(const Vector3& v1, const Vector3& v2) {
+	return { v1.x * v2.x, v1.y * v2.y, v1.z * v2.z };
+}
+
 Vector3 Project(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 result;
@@ -428,14 +446,24 @@ Vector3 Project(const Vector3& v1, const Vector3& v2)
 Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
 {
 	Vector3 result;
-	Vector3 cp;
-	cp.x = segment.origin.x + point.x;
-	cp.y = segment.origin.y + point.y;
-	cp.z = segment.origin.z + point.z;
-	
-	result.x = segment.diff.x - cp.x;
-	result.y = segment.diff.y - cp.y;
-	result.z = segment.diff.z - cp.z;
+	Vector3 ab = segment.diff;
+	Vector3 ap = point - segment.origin; // 終点 - 始点
+
+	float abDot = (ab.x * ab.x) + (ab.y * ab.y) + (ab.z * ab.z);
+
+	if (abDot == 0.0f) {
+		return segment.origin;
+	}
+
+	float dot = (ap.x * ab.x) + (ap.y * ab.y) + (ap.z * ab.z);
+	float t = dot / abDot;
+
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	result.x = segment.origin.x + ab.x * t;
+	result.y = segment.origin.y + ab.y * t;
+	result.z = segment.origin.z + ab.z * t;
+
 	return result;
 }
 

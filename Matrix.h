@@ -33,6 +33,10 @@ struct Segment {
 	Vector3 diff;
 };
 
+// 加算
+Vector3 Add(const Vector3& v1, const Vector3& v2);
+
+
 // 減算
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 
@@ -141,6 +145,10 @@ Vector3 GetSpherePoint(float radius, float lat, float lon);
 
 Vector3 operator+(const Vector3& v1, const Vector3& v2);
 
+Vector3 operator-(const Vector3& v1, const Vector3& v2);
+
+Vector3 operator*(const Vector3& v1, const Vector3& v2);
+
 /// <summary>
 /// 正射影ベクトルを求める関数
 /// </summary>
@@ -149,4 +157,10 @@ Vector3 operator+(const Vector3& v1, const Vector3& v2);
 /// <returns></returns>
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 
+/// <summary>
+/// 最近接点を求める関数
+/// </summary>
+/// <param name="point">ポイント</param>
+/// <param name="segment">セグメント</param>
+/// <returns></returns>
 Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
