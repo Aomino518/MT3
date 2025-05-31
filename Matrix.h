@@ -33,6 +33,9 @@ struct Segment {
 	Vector3 diff;
 };
 
+// 減算
+Vector3 Subtract(const Vector3& v1, const Vector3& v2);
+
 /// <summary>
 /// 正射影行列の作成関数
 /// </summary>

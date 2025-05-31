@@ -39,7 +39,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		// pointを線分に射影したベクトル
-		Vector3 project = Project(Subtract())
+		Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
+
+		// この値が線分上の点を表す
+		Vector3 closestPoint = ClosestPoint(project, segment);
+
+		Sphere pointSphere{ point, 0.01f };
+		Sphere closestPointSphere{ closestPoint, 0.01f };
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -52,6 +58,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ビューポート変換
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
+		Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform())
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -63,12 +72,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
+		DrawSphere(pointSphere, viewProjectionMatrix, viewportMatrix, RED);
+		DrawSphere(closestPointSphere, viewProjectionMatrix, viewportMatrix, BLACK);
+
 		// ImGuiの表示
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("CameraPosition", (float*)&cameraTranslate, 0.01f, -50, 50, "%0.3f");
 		ImGui::DragFloat3("CameraRotate", (float*)&cameraRotate, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("SphereCenter", (float*)&sphere.center, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat("SphereRadius", (float*)&sphere.radius, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///
