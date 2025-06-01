@@ -467,4 +467,21 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
 	return result;
 }
 
+// 球の当たり判定を返す関数
+bool IsCollision(const Sphere& s1, const Sphere& s2)
+{
+	float distance = Length(s2.center - s1.center);
+
+	if (distance <= s1.radius + s2.radius) {
+		return true;
+	}
+
+	return false;
+}
+
+// ベクトルの長さを計算する関数を追加
+float Length(const Vector3& vector) {
+	return std::sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+}
+
 

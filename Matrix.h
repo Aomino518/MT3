@@ -164,3 +164,14 @@ Vector3 Project(const Vector3& v1, const Vector3& v2);
 /// <param name="segment">セグメント</param>
 /// <returns></returns>
 Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+
+/// <summary>
+/// 球の当たり判定を返す関数
+/// </summary>
+/// <param name="s1">球1</param>
+/// <param name="s2">球2</param>
+/// <returns></returns>
+bool IsCollision(const Sphere& s1, const Sphere& s2);
+
+// ベクトルの長さを計算する関数
+float Length(const Vector3& vector);

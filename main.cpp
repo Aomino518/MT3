@@ -1,6 +1,8 @@
 #include <Novice.h>
 #include <imgui.h>
 #include "Matrix.h"
+#include <io.h>
+#include <algorithm>
 
 const char kWindowTitle[] = "LE2C_26_モリ_アオト";
 
@@ -19,11 +21,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// カメラの位置
 	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
 
-	Segment segment = { {-2.0f, -1.0f, 0.0f}, {3.0f, 2.0f, 2.0f} };
-	Vector3 point = { -1.5f, 0.6f, 0.6f };
+	// 球の座標と半径
+	Sphere sphere[2];
+	sphere[0] = { {0.0f, 0.0f, 0.0f}, 1.0f };
+	sphere[1] = { {1.0f, 1.0f, 0.0f}, 1.0f };
+
+	// 球の色
+	unsigned int color = WHITE;
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
+
+	ImGuiIO& io = ImGui::GetIO();
+
+	float sensitivity = 0.01f;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -38,14 +49,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		// pointを線分に射影したベクトル
-		Vector3 project = Project(Subtract(point, segment.origin), segment.diff);
+		// カメラの回転
+		if (!ImGui::GetIO().WantCaptureMouse && io.MouseDown[1]) {
+			cameraRotate.y += io.MouseDelta.x * sensitivity;
+			cameraRotate.x += io.MouseDelta.y * sensitivity;
 
-		// この値が線分上の点を表す
-		Vector3 closestPoint = ClosestPoint(point, segment);
+			cameraRotate.x = std::clamp(cameraRotate.x, -5.0f, 5.0f);
+			cameraRotate.y = std::clamp(cameraRotate.y, -5.0f, 5.0f);
+		}
 
-		Sphere pointSphere{ point, 0.01f };
-		Sphere closestPointSphere{ closestPoint, 0.01f };
+		// カメラの位置の操作
+		if (!ImGui::GetIO().WantCaptureMouse && io.MouseDown[0]) {
+			cameraTranslate.x -= io.MouseDelta.x * sensitivity;
+			cameraTranslate.y += io.MouseDelta.y * sensitivity;
+			cameraTranslate.z += io.MouseWheel * 0.1f;
+		}
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -58,8 +76,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ビューポート変換
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
-		Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
+		// 球が当たっているか
+		bool isSphereCollision = IsCollision(sphere[0], sphere[1]);
+
+		// 当たっているときだけ赤に
+		color = (isSphereCollision) ? RED : WHITE;
 
 		///
 		/// ↑更新処理ここまで
@@ -72,20 +93,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 
-		// 線
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), WHITE);
-
-		// 赤い点
-		DrawSphere(pointSphere, viewProjectionMatrix, viewportMatrix, RED);
-		// 黒い点
-		DrawSphere(closestPointSphere, viewProjectionMatrix, viewportMatrix, BLACK);
+		for (int i = 0; i < 2; i++) {
+			DrawSphere(sphere[i], viewProjectionMatrix, viewportMatrix, color);
+		}
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("Point", (float*)&point, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("segment.origin", (float*)&segment.origin, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("segment.diff", (float*)&segment.diff, 0.01f, -50, 50, "%0.3f");
-		ImGui::InputFloat3("Project", &project.x, "%.3f", ImGuiInputTextFlags_ReadOnly);
+		ImGui::DragFloat3("Sphere[0].center", (float*)&sphere[0].center, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat("Sphere[0].radius", (float*)&sphere[0].radius, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Sphere[1].center", (float*)&sphere[1].center, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat("Sphere[1].radius", (float*)&sphere[1].radius, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///
