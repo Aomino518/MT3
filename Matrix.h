@@ -33,6 +33,11 @@ struct Segment {
 	Vector3 diff;
 };
 
+struct Plane {
+	Vector3 normal; //!< 法線
+	float distance; //!< 距離
+};
+
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 
@@ -79,6 +84,8 @@ Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, f
 /// <param name="m2">行列2</param>
 /// <returns>行列の積</returns>
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
+
+Vector3 Multiply(const float& scalor, const Vector3& v);
 
 /// <summary>
 /// 平行移動行列関数
@@ -171,7 +178,30 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 /// <param name="s1">球1</param>
 /// <param name="s2">球2</param>
 /// <returns></returns>
-bool IsCollision(const Sphere& s1, const Sphere& s2);
+bool IsCollision(const Sphere& s, const Plane& plane);
 
 // ベクトルの長さを計算する関数
 float Length(const Vector3& vector);
+
+/// <summary>
+/// ベクトルに直交するベクトルを計算する関数
+/// </summary>
+/// <param name="vector">ベクトル</param>
+/// <returns></returns>
+Vector3 Perpendicular(const Vector3& vector);
+
+/// <summary>
+/// 平面を描画する関数
+/// </summary>
+/// <param name="plane">平面の構造体データ</param>
+/// <param name="viewProjectionMatrix">透視投影行列</param>
+/// <param name="viewportMatrix">ビューポート行列</param>
+/// <param name="color">色</param>
+void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+/// <summary>
+/// 正規化する関数
+/// </summary>
+///<param name="normal">平面のベクトル</param>
+/// <returns>正規化したベクトル</returns>
+Vector3 Normalize(const Vector3& normal);

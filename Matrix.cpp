@@ -119,6 +119,14 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	return result;
 }
 
+Vector3 Multiply(const float& scalor, const Vector3& v) {
+	Vector3 result{};
+	result.x = v.x * scalor;
+	result.y = v.y * scalor;
+	result.z = v.z * scalor;
+	return result;
+}
+
 // 平行移動行列
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	Matrix4x4 result;
@@ -468,11 +476,16 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
 }
 
 // 球の当たり判定を返す関数
-bool IsCollision(const Sphere& s1, const Sphere& s2)
+bool IsCollision(const Sphere& s, const Plane& plane)
 {
-	float distance = Length(s2.center - s1.center);
+	float d = plane.normal.x * s.center.x +
+		plane.normal.y * s.center.y +
+		plane.normal.z * s.center.z -
+		plane.distance;
 
-	if (distance <= s1.radius + s2.radius) {
+	d = (d < 0.0f) ? -d : d;
+
+	if (d <= s.radius) {
 		return true;
 	}
 
@@ -482,6 +495,48 @@ bool IsCollision(const Sphere& s1, const Sphere& s2)
 // ベクトルの長さを計算する関数を追加
 float Length(const Vector3& vector) {
 	return std::sqrt(vector.x * vector.x + vector.y * vector.y + vector.z * vector.z);
+}
+
+// ベクトルに直交するベクトルを計算する関数
+Vector3 Perpendicular(const Vector3& vector)
+{
+	if (vector.x != 0.0f || vector.y != 0.0f) {
+		return { -vector.y, vector.x, 0.0f };
+	}
+	return { 0.0f, -vector.z, vector.y };
+}
+
+// 平面を描画する関数
+void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 center = Multiply(plane.distance, plane.normal);
+	Vector3 perpendculars[4];
+	perpendculars[0] = Normalize(Perpendicular(plane.normal));
+	perpendculars[1] = { -perpendculars[0].x, -perpendculars[0].y, -perpendculars[0].z };
+	perpendculars[2] = Cross(plane.normal, perpendculars[0]);
+	perpendculars[3] = { -perpendculars[2].x, -perpendculars[2].y, -perpendculars[2].z };
+
+	Vector3 points[4];
+	for (int32_t index = 0; index < 4; ++index) {
+		Vector3 extend = Multiply(2.0f, perpendculars[index]);
+		Vector3 point = Add(center, extend);
+		points[index] = Transform(Transform(point, viewProjectionMatrix), viewportMatrix);
+	}
+
+	Novice::DrawLine(int(points[0].x), int(points[0].y), int(points[2].x), int(points[2].y), color);
+	Novice::DrawLine(int(points[0].x), int(points[0].y), int(points[3].x), int(points[3].y), color);
+	Novice::DrawLine(int(points[1].x), int(points[1].y), int(points[2].x), int(points[2].y), color);
+	Novice::DrawLine(int(points[1].x), int(points[1].y), int(points[3].x), int(points[3].y), color);
+}
+
+// 正規化する関数
+Vector3 Normalize(const Vector3& normal)
+{
+	float len = Length(normal);
+	if (len == 0.0f) {
+		return { 0.0f, 0.0f, 0.0f };
+	}
+	return { normal.x / len, normal.y / len, normal.z / len };
 }
 
 
