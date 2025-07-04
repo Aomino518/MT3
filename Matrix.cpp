@@ -539,4 +539,23 @@ Vector3 Normalize(const Vector3& normal)
 	return { normal.x / len, normal.y / len, normal.z / len };
 }
 
+float Dot(const Vector3& v1, const Vector3& v2) {
+	return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+}
+
+bool isCollisionLine(const Segment& line, const Plane& plane)
+{
+	float dot = Dot(plane.normal, line.diff);
+	if (dot == 0.0f) {
+		return false;
+	}
+
+	float t = (plane.distance - Dot(line.origin, plane.normal)) / dot;
+	if (t >= 0.0f && t <= 1.0f) {
+		return true;
+	}
+
+	return false;
+}
+
 

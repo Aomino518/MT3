@@ -205,3 +205,7 @@ void DrawPlane(const Plane& plane, const Matrix4x4& viewProjectionMatrix, const 
 ///<param name="normal">平面のベクトル</param>
 /// <returns>正規化したベクトル</returns>
 Vector3 Normalize(const Vector3& normal);
+
+float Dot(const Vector3& v1, const Vector3& v2);
+
+bool isCollisionLine(const Segment& line, const Plane& plane);
