@@ -38,6 +38,11 @@ struct Plane {
 	float distance; //!< 距離
 };
 
+struct Triangle {
+	Vector3 vertices[3];
+	float distance;
+};
+
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 
@@ -178,7 +183,7 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 /// <param name="s1">球1</param>
 /// <param name="s2">球2</param>
 /// <returns></returns>
-bool IsCollision(const Sphere& s, const Plane& plane);
+bool IsCollision(const Triangle& triangle, const Segment& segment);
 
 // ベクトルの長さを計算する関数
 float Length(const Vector3& vector);
@@ -209,3 +214,5 @@ Vector3 Normalize(const Vector3& normal);
 float Dot(const Vector3& v1, const Vector3& v2);
 
 bool isCollisionLine(const Segment& line, const Plane& plane);
+
+void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);

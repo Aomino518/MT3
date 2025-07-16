@@ -21,26 +21,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// カメラの位置
 	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
 
-	// 球の座標と半径
-	Sphere sphere;
-	sphere = { {0.0f, 0.0f, 0.0f}, 1.0f };
+	// 三角形の頂点位置
+	Triangle triangle = 
+	{
+		{
+			{ 1.0f, 0.0f, 0.0f },
+			{ 0.0f, 1.0f, 0.0f },
+			{ -1.0f, 0.0f, 0.0f },
+		},
+		1.0f
+	};
 
-	// 平面
-	Plane plane;
-	plane = { {0.0f, 1.0f, 0.0f}, 1.0f };
+	Segment segment = { {1.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 2.0f} };
 
-	// 球の色
-	unsigned int lineColor = WHITE;
-	unsigned int planeColor = WHITE;
+	uint32_t color = WHITE;
+	uint32_t lineColor = WHITE;
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
 
 	ImGuiIO& io = ImGui::GetIO();
 
-	float sensitivity = 0.01f;
+	// マウス操作速度の関数
+	const float rotateSpeed = 0.01f;
+	const float panSpeed = 0.01f;
+	const float zoomSpeed = 0.1f;
 
-	Segment segment = { {-2.0f, -1.0f, 0.0f}, {3.0f, 2.0f, 2.0f} };
+	bool isHit;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -55,26 +62,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		// カメラの回転
-		if (!ImGui::GetIO().WantCaptureMouse && io.MouseDown[1]) {
-			cameraRotate.y += io.MouseDelta.x * sensitivity;
-			cameraRotate.x += io.MouseDelta.y * sensitivity;
+		if (!ImGui::GetIO().WantCaptureMouse) {
+			// 右クリックで回転
+			if (io.MouseDown[1]) {
+				cameraRotate.y += io.MouseDelta.x * rotateSpeed;
+				cameraRotate.x += io.MouseDelta.y * rotateSpeed;
 
-			cameraRotate.x = std::clamp(cameraRotate.x, -5.0f, 5.0f);
-			cameraRotate.y = std::clamp(cameraRotate.y, -5.0f, 5.0f);
+				cameraRotate.x = std::clamp(cameraRotate.x, -89.0f, 89.0f); // 俯瞰制限
+			}
+
+			// 中クリックで平行移動
+			if (io.MouseDown[2]) {
+				cameraTranslate.x -= io.MouseDelta.x * panSpeed;
+				cameraTranslate.y += io.MouseDelta.y * panSpeed;
+			}
+			
+			// ホイールでズーム
+			if (io.MouseWheel != 0.0f) {
+				cameraTranslate.z += io.MouseWheel * zoomSpeed;
+			}
 		}
 
-		// カメラの位置の操作
-		if (!ImGui::GetIO().WantCaptureMouse && io.MouseDown[0]) {
-			cameraTranslate.x -= io.MouseDelta.x * sensitivity;
-			cameraTranslate.y += io.MouseDelta.y * sensitivity;
-			cameraTranslate.z += io.MouseWheel * 0.1f;
-		}
+		isHit = IsCollision(triangle, segment);
 
-		// 当たり判定
-		bool isLineCollision = isCollisionLine(segment, plane);
-
-		lineColor = (isLineCollision) ? RED : WHITE;
+		lineColor = isHit ? RED : WHITE;
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -89,7 +100,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
 		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
-
 		///
 		/// ↑更新処理ここまで
 		///
@@ -100,13 +110,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
+		DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, color);
 		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), lineColor);
-		DrawPlane(plane, viewProjectionMatrix, viewportMatrix, planeColor);
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("Plane.Normal", (float*)&plane.normal, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat("Plane.distance", (float*)&plane.distance, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Triangle.v0", (float*)&triangle.vertices[0], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Triangle.v1", (float*)&triangle.vertices[1], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Triangle.v2", (float*)&triangle.vertices[2], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Segment.diff", (float*)&segment.diff, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Segment.origin", (float*)&segment.origin, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///

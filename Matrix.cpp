@@ -439,6 +439,10 @@ Vector3 operator*(const Vector3& v1, const Vector3& v2) {
 	return { v1.x * v2.x, v1.y * v2.y, v1.z * v2.z };
 }
 
+Vector3 operator*(const Vector3& v, float scalar) {
+	return { v.x * scalar, v.y * scalar, v.z * scalar };
+}
+
 Vector3 Project(const Vector3& v1, const Vector3& v2)
 {
 	Vector3 result;
@@ -476,16 +480,46 @@ Vector3 ClosestPoint(const Vector3& point, const Segment& segment)
 }
 
 // 球の当たり判定を返す関数
-bool IsCollision(const Sphere& s, const Plane& plane)
+bool IsCollision(const Triangle& triangle, const Segment& segment)
 {
-	float d = plane.normal.x * s.center.x +
-		plane.normal.y * s.center.y +
-		plane.normal.z * s.center.z -
-		plane.distance;
+	const Vector3& v0 = triangle.vertices[0];
+	const Vector3& v1 = triangle.vertices[1];
+	const Vector3& v2 = triangle.vertices[2];
 
-	d = (d < 0.0f) ? -d : d;
+	// 三角形の法線
+	Vector3 normal = Normalize(Cross(v1 - v0, v2 - v0));
 
-	if (d <= s.radius) {
+	float dot = Dot(normal, segment.diff);
+	if (std::abs(dot) < 1e-6f) {
+		return false;
+	}
+
+	float d = Dot(normal, v0);
+	float t = (d - Dot(normal, segment.origin)) / dot;
+
+	if (t < 0.0f || t > 1.0f) {
+		return false;
+	}
+
+	Vector3 p = segment.origin + segment.diff * t;
+ 
+	// 三角形の辺のベクトル
+	Vector3 v01 = v1 - v0;
+	Vector3 v12 = v2 - v1;
+	Vector3 v20 = v0 - v2;
+
+	Vector3 v0p = p - v0;
+	Vector3 v1p = p - v1;
+	Vector3 v2p = p - v2;
+
+
+	Vector3 cross01 = Cross(v01, v0p);
+	Vector3 cross12 = Cross(v12, v1p);
+	Vector3 cross20 = Cross(v20, v2p);
+
+	if (Dot(cross01, normal) >= 0.0f &&
+		Dot(cross12, normal) >= 0.0f &&
+		Dot(cross20, normal) >= 0.0f) {
 		return true;
 	}
 
@@ -556,6 +590,25 @@ bool isCollisionLine(const Segment& line, const Plane& plane)
 	}
 
 	return false;
+}
+
+void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 vertices[3];
+	vertices[0] = Transform(Transform(triangle.vertices[0], viewProjectionMatrix), viewportMatrix);
+	vertices[1] = Transform(Transform(triangle.vertices[1], viewProjectionMatrix), viewportMatrix);
+	vertices[2] = Transform(Transform(triangle.vertices[2], viewProjectionMatrix), viewportMatrix);
+
+	Novice::DrawTriangle(
+		int(vertices[0].x),
+		int(vertices[0].y),
+		int(vertices[1].x),
+		int(vertices[1].y),
+		int(vertices[2].x),
+		int(vertices[2].y),
+		color,
+		kFillModeWireFrame
+		);
 }
 
 
