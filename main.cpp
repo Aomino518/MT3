@@ -21,21 +21,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// カメラの位置
 	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
 
-	// 三角形の頂点位置
-	Triangle triangle = 
-	{
-		{
-			{ 1.0f, 0.0f, 0.0f },
-			{ 0.0f, 1.0f, 0.0f },
-			{ -1.0f, 0.0f, 0.0f },
-		},
-		1.0f
+	AABB aabb1 = {
+		{-0.5f, -0.5f, -0.5f},
+		{0.0f, 0.0f, 0.0f}
 	};
 
-	Segment segment = { {1.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 2.0f} };
+	AABB aabb2 = {
+		{0.2f, 0.2f, 0.2f},
+		{1.0f, 1.0f, 1.0f}
+	};
 
-	uint32_t color = WHITE;
-	uint32_t lineColor = WHITE;
+	uint32_t aabb1Color = WHITE;
+	uint32_t aabb2Color = WHITE;
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
@@ -83,9 +80,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 
-		isHit = IsCollision(triangle, segment);
-
-		lineColor = isHit ? RED : WHITE;
+		// 当たり判定
+		isHit = isCollisionBox(aabb1, aabb2);
+		aabb1Color = isHit ? RED : WHITE;
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -97,8 +94,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
 		// ビューポート変換
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
-		Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
-		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
 		///
 		/// ↑更新処理ここまで
@@ -110,16 +105,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawTriangle(triangle, viewProjectionMatrix, viewportMatrix, color);
-		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), lineColor);
+		DrawBox(aabb1, viewProjectionMatrix, viewportMatrix, aabb1Color);
+		DrawBox(aabb2, viewProjectionMatrix, viewportMatrix, aabb2Color);
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("Triangle.v0", (float*)&triangle.vertices[0], 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("Triangle.v1", (float*)&triangle.vertices[1], 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("Triangle.v2", (float*)&triangle.vertices[2], 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("Segment.diff", (float*)&segment.diff, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("Segment.origin", (float*)&segment.origin, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("aabb1.min", (float*)&aabb1.min, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("aabb1.max", (float*)&aabb1.max, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("aabb2.min", (float*)&aabb2.min, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("aabb2.max", (float*)&aabb2.max, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///

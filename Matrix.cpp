@@ -611,4 +611,46 @@ void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatri
 		);
 }
 
+void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	Vector3 vertices[8] = {
+	{ aabb.min.x, aabb.min.y, aabb.min.z },
+	{ aabb.max.x, aabb.min.y, aabb.min.z },
+	{ aabb.min.x, aabb.max.y, aabb.min.z },
+	{ aabb.max.x, aabb.max.y, aabb.min.z },
+	{ aabb.min.x, aabb.min.y, aabb.max.z },
+	{ aabb.max.x, aabb.min.y, aabb.max.z },
+	{ aabb.min.x, aabb.max.y, aabb.max.z },
+	{ aabb.max.x, aabb.max.y, aabb.max.z }
+	};
+
+	int indices[12][2] = {
+		{0, 1}, {1, 3}, {3, 2}, {2, 0}, // 奥面
+		{4, 5}, {5, 7}, {7, 6}, {6, 4}, // 手前面
+		{0, 4}, {1, 5}, {2, 6}, {3, 7}  // 側面
+	};
+
+	Vector3 screen[8];
+	for (int i = 0; i < 8; ++i) {
+		screen[i] = Transform(Transform(vertices[i], viewProjectionMatrix), viewportMatrix);
+	}
+
+	for (int i = 0; i < 12; ++i) {
+		const Vector3& p0 = screen[indices[i][0]];
+		const Vector3& p1 = screen[indices[i][1]];
+		Novice::DrawLine(int(p0.x), int(p0.y), int(p1.x), int(p1.y), color);
+	}
+}
+
+bool isCollisionBox(const AABB& aabb1, const AABB& aabb2)
+{
+	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) &&
+		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) &&
+		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z)) {
+		return true;
+	}
+
+	return false;
+}
+
 

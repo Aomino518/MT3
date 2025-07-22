@@ -43,6 +43,11 @@ struct Triangle {
 	float distance;
 };
 
+struct AABB {
+	Vector3 min; // 最小点
+	Vector3 max; // 最大点
+};
+
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 
@@ -216,3 +221,20 @@ float Dot(const Vector3& v1, const Vector3& v2);
 bool isCollisionLine(const Segment& line, const Plane& plane);
 
 void DrawTriangle(const Triangle& triangle, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+/// <summary>
+/// boxを描画する関数
+/// </summary>
+/// <param name="aabb">boxのminとmax</param>
+/// <param name="viewProjectionMatrix">ビュープロジェクション行列</param>
+/// <param name="viewportMatrix">ビューポート行列</param>
+/// <param name="color">色</param>
+void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+/// <summary>
+/// box同士の当たり判定を返す関数
+/// </summary>
+/// <param name="aabb1">ボックス1</param>
+/// <param name="aabb2">ボックス2</param>
+/// <returns>trueかfalseか</returns>
+bool isCollisionBox(const AABB& aabb1, const AABB& aabb2);
