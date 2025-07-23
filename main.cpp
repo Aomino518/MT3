@@ -21,18 +21,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// カメラの位置
 	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
 
-	AABB aabb1 = {
+	AABB aabb = {
 		{-0.5f, -0.5f, -0.5f},
 		{0.0f, 0.0f, 0.0f}
 	};
 
-	AABB aabb2 = {
-		{0.2f, 0.2f, 0.2f},
-		{1.0f, 1.0f, 1.0f}
+	Sphere sphere = {
+		{1.0f, 1.0f, 1.0f},
+		 1.0f
 	};
 
-	uint32_t aabb1Color = WHITE;
-	uint32_t aabb2Color = WHITE;
+	uint32_t aabbColor = WHITE;
+	uint32_t sphereColor = WHITE;
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
@@ -81,8 +81,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		// 当たり判定
-		isHit = isCollisionBox(aabb1, aabb2);
-		aabb1Color = isHit ? RED : WHITE;
+		isHit = isCollisionBoxSphere(aabb, sphere);
+		aabbColor = isHit ? RED : WHITE;
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -105,15 +105,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		DrawBox(aabb1, viewProjectionMatrix, viewportMatrix, aabb1Color);
-		DrawBox(aabb2, viewProjectionMatrix, viewportMatrix, aabb2Color);
+		DrawBox(aabb, viewProjectionMatrix, viewportMatrix, aabbColor);
+		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, sphereColor);
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("aabb1.min", (float*)&aabb1.min, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("aabb1.max", (float*)&aabb1.max, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("aabb2.min", (float*)&aabb2.min, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("aabb2.max", (float*)&aabb2.max, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("aabb1.min", (float*)&aabb.min, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("aabb1.max", (float*)&aabb.max, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("sphere.center", (float*)&sphere.center, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat("sphere.radius", (float*)&sphere.radius, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///

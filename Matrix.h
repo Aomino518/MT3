@@ -238,3 +238,11 @@ void DrawBox(const AABB& aabb, const Matrix4x4& viewProjectionMatrix, const Matr
 /// <param name="aabb2">ボックス2</param>
 /// <returns>trueかfalseか</returns>
 bool isCollisionBox(const AABB& aabb1, const AABB& aabb2);
+
+/// <summary>
+/// ボックスと球の当たり判定を返す関数
+/// </summary>
+/// <param name="aabb">ボックス</param>
+/// <param name="sphere">球</param>
+/// <returns>trueかfalseか</returns>
+bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere);
