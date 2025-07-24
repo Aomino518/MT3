@@ -26,13 +26,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0.0f, 0.0f, 0.0f}
 	};
 
-	Sphere sphere = {
-		{1.0f, 1.0f, 1.0f},
-		 1.0f
+	Segment segment = {
+		{-0.7f, 0.3f, 0.0f},
+		{2.0f, -0.5f, 0.0f}
 	};
 
 	uint32_t aabbColor = WHITE;
-	uint32_t sphereColor = WHITE;
+	uint32_t segmentColor = WHITE;
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
@@ -44,7 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const float panSpeed = 0.01f;
 	const float zoomSpeed = 0.1f;
 
-	bool isHit;
+	//bool isHit;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -81,8 +81,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		// 当たり判定
-		isHit = isCollisionBoxSphere(aabb, sphere);
-		aabbColor = isHit ? RED : WHITE;
+		//isHit = isCollisionBoxSphere(aabb, sphere);
+		//aabbColor = isHit ? RED : WHITE;
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -106,14 +106,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 		DrawBox(aabb, viewProjectionMatrix, viewportMatrix, aabbColor);
-		DrawSphere(sphere, viewProjectionMatrix, viewportMatrix, sphereColor);
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("aabb1.min", (float*)&aabb.min, 0.01f, -50, 50, "%0.3f");
 		ImGui::DragFloat3("aabb1.max", (float*)&aabb.max, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("sphere.center", (float*)&sphere.center, 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat("sphere.radius", (float*)&sphere.radius, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///

@@ -246,3 +246,5 @@ bool isCollisionBox(const AABB& aabb1, const AABB& aabb2);
 /// <param name="sphere">球</param>
 /// <returns>trueかfalseか</returns>
 bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere);
+
+bool isCollision(const AABB& aabb, const Segment& segment);

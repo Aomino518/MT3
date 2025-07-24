@@ -672,4 +672,11 @@ bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere)
 	return false;
 }
 
+bool isCollision(const AABB& aabb, const Segment& segment)
+{
+
+
+	return false;
+}
+
 
