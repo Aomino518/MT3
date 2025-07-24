@@ -247,4 +247,10 @@ bool isCollisionBox(const AABB& aabb1, const AABB& aabb2);
 /// <returns>trueかfalseか</returns>
 bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere);
 
+/// <summary>
+/// aabbとsegmentの当たり判定を返す関数
+///</summary>
+///<param name="aabb">ボックス</param>
+///<param name="segment">線</param>
+///<returns>trueかfalseか</returns>
 bool isCollision(const AABB& aabb, const Segment& segment);

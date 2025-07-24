@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	AABB aabb = {
 		{-0.5f, -0.5f, -0.5f},
-		{0.0f, 0.0f, 0.0f}
+		{0.5f, 0.5f, 0.5f}
 	};
 
 	Segment segment = {
@@ -44,7 +44,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const float panSpeed = 0.01f;
 	const float zoomSpeed = 0.1f;
 
-	//bool isHit;
+	bool isHit;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -81,8 +81,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 
 		// 当たり判定
-		//isHit = isCollisionBoxSphere(aabb, sphere);
-		//aabbColor = isHit ? RED : WHITE;
+		isHit = isCollision(aabb, segment);
+		segmentColor = isHit ? RED : WHITE;
 
 		// カメラの位置をワールド空間に変換する行列
 		Matrix4x4 cameraMatrix = MakeAffineMatrix({1.0f, 1.0f, 1.0f}, cameraRotate, cameraTranslate);
@@ -94,6 +94,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewProjectionMatrix = Multiply(viewMatrix, projectionMatrix);
 		// ビューポート変換
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
+		Vector3 start = Transform(Transform(segment.origin, viewProjectionMatrix), viewportMatrix);
+		Vector3 end = Transform(Transform(Add(segment.origin, segment.diff), viewProjectionMatrix), viewportMatrix);
 
 		///
 		/// ↑更新処理ここまで
@@ -106,11 +108,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
 		DrawBox(aabb, viewProjectionMatrix, viewportMatrix, aabbColor);
+		Novice::DrawLine(int(start.x), int(start.y), int(end.x), int(end.y), segmentColor);
 
 		// ImGuiの表示
 		ImGui::Begin("Window");
 		ImGui::DragFloat3("aabb1.min", (float*)&aabb.min, 0.01f, -50, 50, "%0.3f");
 		ImGui::DragFloat3("aabb1.max", (float*)&aabb.max, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Segment.diff", (float*)&segment.diff, 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("Segment.origin", (float*)&segment.origin, 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///

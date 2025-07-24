@@ -674,7 +674,29 @@ bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere)
 
 bool isCollision(const AABB& aabb, const Segment& segment)
 {
+	float txmin = (aabb.min.x - segment.origin.x) / segment.diff.x;
+	float txmax = (aabb.max.x - segment.origin.x) / segment.diff.x;
 
+	float tymin = (aabb.min.y - segment.origin.y) / segment.diff.y;
+	float tymax = (aabb.max.y - segment.origin.y) / segment.diff.y;
+
+	float tzmin = (aabb.min.z - segment.origin.z) / segment.diff.z;
+	float tzmax = (aabb.max.z - segment.origin.z) / segment.diff.z;
+
+	float tNearX = min(txmin, txmax);
+	float tFarX = max(txmin, txmax);
+	float tNearY = min(tymin, tymax);
+	float tFarY = max(tymin, tymax);
+	float tNearZ = min(tzmin, tzmax);
+	float tFarZ = max(tzmin, tzmax);
+
+	// AABBの衝突点のtが小さいほう
+	float tmin = max(max(tNearX, tNearY), tNearZ);
+	// AABBの衝突点のtが大きいほう
+	float tmax = min(min(tFarX, tFarY), tFarZ);
+	if (tmin <= tmax) {
+		return true;
+	}
 
 	return false;
 }
