@@ -701,4 +701,38 @@ bool isCollision(const AABB& aabb, const Segment& segment)
 	return false;
 }
 
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t)
+{
+	return v1 + (v2 - v1) * t;
+}
 
+void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
+{
+	const int segments = 32;
+	for (int i = 0; i < segments; ++i) {
+		float t0 = static_cast<float>(i) / segments;
+		float t1 = static_cast<float>(i + 1) / segments;
+
+		Vector3 a0 = Lerp(controlPoint0, controlPoint1, t0);
+		Vector3 b0 = Lerp(controlPoint1, controlPoint2, t0);
+		Vector3 point0 = Lerp(a0, b0, t0);
+
+		Vector3 a1 = Lerp(controlPoint0, controlPoint1, t1);
+		Vector3 b1 = Lerp(controlPoint1, controlPoint2, t1);
+		Vector3 point1 = Lerp(a1, b1, t1);
+
+		Vector3 screen0 = Transform(Transform(point0, viewProjectionMatrix), viewportMatrix);
+		Vector3 screen1 = Transform(Transform(point1, viewProjectionMatrix), viewportMatrix);
+
+		Novice::DrawLine(int(screen0.x), int(screen0.y), int(screen1.x), int(screen1.y), color);
+	}
+
+	// スクリーン変換
+	Vector3 p0 = Transform(Transform(controlPoint0, viewProjectionMatrix), viewportMatrix);
+	Vector3 p1 = Transform(Transform(controlPoint1, viewProjectionMatrix), viewportMatrix);
+	Vector3 p2 = Transform(Transform(controlPoint2, viewProjectionMatrix), viewportMatrix);
+
+	Novice::DrawEllipse(int(p0.x), int(p0.y), 5, 5, 0.0f, BLACK, kFillModeSolid);
+	Novice::DrawEllipse(int(p1.x), int(p1.y), 5, 5, 0.0f, BLACK, kFillModeSolid);
+	Novice::DrawEllipse(int(p2.x), int(p2.y), 5, 5, 0.0f, BLACK, kFillModeSolid);
+}

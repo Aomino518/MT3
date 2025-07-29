@@ -254,3 +254,24 @@ bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere);
 ///<param name="segment">線</param>
 ///<returns>trueかfalseか</returns>
 bool isCollision(const AABB& aabb, const Segment& segment);
+
+/// <summary>
+/// 線形補間関数
+/// </summary>
+/// <param name="v1">point1</param>
+/// <param name="v2">point2</param>
+/// <param name="t">補間係数</param>
+/// <returns>補間結果</returns>
+Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
+
+/// <summary>
+/// ベジエ曲線描画する関数
+/// </summary>
+/// <param name="controlPoint0">point0</param>
+/// <param name="controlPoint1">point1</param>
+/// <param name="controlPoint2">point2</param>
+/// <param name="viewProjectionMatrix">ビュープロジェクション行列</param>
+/// <param name="viewportMatrix">ビューポート行列</param>
+/// <param name="color">色</param>
+void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2,
+	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
