@@ -420,11 +420,12 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 	}
 }
 
-Vector3 GetSpherePoint(float radius, float lat, float lon) {
-	float x = radius * cosf(lat) * cosf(lon);
-	float y = radius * sinf(lat);
-	float z = radius * cosf(lat) * sinf(lon);
-	return { x, y, z };
+Vector3 GetSpherePoint(const Vector3& radius, float lat, float lon) {
+	Vector3 result;
+	result.x = radius.x * cosf(lat) * cosf(lon);
+	result.y = radius.y * sinf(lat);
+	result.z = radius.z * cosf(lat) * sinf(lon);
+	return result;
 }
 
 Vector3 operator+(const Vector3& v1, const Vector3& v2) {
@@ -665,7 +666,9 @@ bool isCollisionBoxSphere(const AABB& aabb, const Sphere& sphere)
 	// 最近接点と球の中心との距離を求める
 	float distance = Length(closestPoint - sphere.center);
 	// 距離が半径よりも小さければ衝突
-	if (distance <= sphere.radius) {
+	if (distance <= sphere.radius.x &&
+		distance <= sphere.radius.y &&
+		distance <= sphere.radius.z) {
 		return true;
 	}
 

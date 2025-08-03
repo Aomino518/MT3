@@ -21,11 +21,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// カメラの位置
 	Vector3 cameraTranslate{0.0f, 1.9f, -6.49f};
 
-	Vector3 controlPoints[3] = {
-		{-0.8f, 0.58f, 1.0f},
-		{1.76f, 1.0f, -0.3f},
-		{0.94f, -0.7f, 2.3f}
+	// 平行移動
+	Vector3 translates[3] = {
+		{0.2f, 1.0f, 0.0f},
+		{0.4f, 0.5f, 0.0f},
+		{0.3f, 0.0f, 0.0f},
 	};
+
+	// 回転
+	Vector3 rotates[3] = {
+		{0.0f, 0.0f, -6.8f},
+		{0.0f, 0.0f, -1.4f},
+		{0.0f, 0.0f, 0.0f},
+	};
+
+	// スケール
+	Vector3 scales[3] = {
+		{0.1f, 0.1f, 0.1f},
+		{0.1f, 0.1f, 0.1f},
+		{0.1f, 0.1f, 0.1f},
+	};
+
+	// 球の色
+	uint32_t color[3] = {
+		RED,
+		GREEN,
+		BLUE,
+	};
+
+	Sphere sphere[3] = {};
 
 	static const int kWindowWidth = 1280;
 	static const int kWindowHeight = 720;
@@ -82,6 +106,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		// ビューポート変換
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
+		// 肩のWorldMatrix
+		Matrix4x4 shoulderWorldMatrix = MakeAffineMatrix(translates[0], rotates[0], scales[0]);
+
+		// 肘のWorldMatrix
+		Matrix4x4 elbowWorldMatrix = Multiply(MakeAffineMatrix(translates[1], rotates[1], scales[1]), shoulderWorldMatrix);
+
+		// 手のWorldMatrix
+		Matrix4x4 handWorldMatrix = Multiply(MakeAffineMatrix(translates[2], rotates[2], scales[2]), elbowWorldMatrix);
+
+		// 座標変換
+		Vector3 shoulderPos = Transform({ 0, 0, 0 }, shoulderWorldMatrix);
+		Vector3 elbowPos = Transform({ 0, 0, 0 }, elbowWorldMatrix);
+		Vector3 handPos = Transform({ 0, 0, 0 }, handWorldMatrix);
+
+		sphere[0] = {shoulderPos, scales[0]};
+		sphere[1] = {elbowPos, scales[1]};
+		sphere[2] = {handPos, scales[2]};
+
+		Vector3 sphere1 = Transform(Transform(sphere[0].center, viewProjectionMatrix), viewportMatrix);
+		Vector3 sphere2 = Transform(Transform(sphere[1].center, viewProjectionMatrix), viewportMatrix);
+		Vector3 sphere3 = Transform(Transform(sphere[2].center, viewProjectionMatrix), viewportMatrix);
+
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -92,14 +139,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		// グリッドの表示
 		DrawGrid(viewProjectionMatrix, viewportMatrix);
-		// ベジエ曲線の表示
-		DrawBezier(controlPoints[0], controlPoints[1], controlPoints[2], viewProjectionMatrix, viewportMatrix, BLUE);
+		
+		// 球の表示
+		for (int i = 0; i < 3; i++) {
+			DrawSphere(sphere[i], viewProjectionMatrix, viewportMatrix, color[i]);
+		}
 
+		// 線の表示
+		Novice::DrawLine(int(sphere1.x),
+			int(sphere1.y),
+			int(sphere2.x),
+			int(sphere2.y),
+			WHITE);
+
+		Novice::DrawLine(int(sphere2.x),
+			int(sphere2.y),
+			int(sphere3.x),
+			int(sphere3.y),
+			WHITE);
+		
 		// ImGuiの表示
 		ImGui::Begin("Window");
-		ImGui::DragFloat3("controlPoints[0]", (float*)&controlPoints[0], 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("controlPoints[1]", (float*)&controlPoints[1], 0.01f, -50, 50, "%0.3f");
-		ImGui::DragFloat3("controlPoints[2]", (float*)&controlPoints[2], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("translates[0]", (float*)&translates[0], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("rotates[0]", (float*)&rotates[0], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("scales[0]", (float*)&scales[0], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("translates[1]", (float*)&translates[1], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("rotates[1]", (float*)&rotates[1], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("scales[1]", (float*)&scales[1], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("translates[2]", (float*)&translates[2], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("rotates[2]", (float*)&rotates[2], 0.01f, -50, 50, "%0.3f");
+		ImGui::DragFloat3("scales[2]", (float*)&scales[2], 0.01f, -50, 50, "%0.3f");
 		ImGui::End();
 
 		///

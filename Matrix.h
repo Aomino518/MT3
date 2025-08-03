@@ -15,7 +15,7 @@ struct Vector4 {
 
 struct Sphere {
 	Vector3 center;
-	float radius;
+	Vector3 radius;
 };
 
 struct Line {
@@ -158,7 +158,7 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 /// <param name="color">色</param>
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
-Vector3 GetSpherePoint(float radius, float lat, float lon);
+Vector3 GetSpherePoint(const Vector3& radius, float lat, float lon);
 
 Vector3 operator+(const Vector3& v1, const Vector3& v2);
 
