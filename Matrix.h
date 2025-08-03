@@ -50,10 +50,11 @@ struct AABB {
 
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
-
+Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
 
 // 減算
 Vector3 Subtract(const Vector3& v1, const Vector3& v2);
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
 
 /// <summary>
 /// 正射影行列の作成関数
@@ -159,12 +160,6 @@ void DrawGrid(const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMa
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
 
 Vector3 GetSpherePoint(const Vector3& radius, float lat, float lon);
-
-Vector3 operator+(const Vector3& v1, const Vector3& v2);
-
-Vector3 operator-(const Vector3& v1, const Vector3& v2);
-
-Vector3 operator*(const Vector3& v1, const Vector3& v2);
 
 /// <summary>
 /// 正射影ベクトルを求める関数
@@ -275,3 +270,22 @@ Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 /// <param name="color">色</param>
 void DrawBezier(const Vector3& controlPoint0, const Vector3& controlPoint1, const Vector3& controlPoint2,
 	const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
+
+// オペレーター
+Vector3 operator+(const Vector3& v1, const Vector3& v2);
+
+Vector3 operator-(const Vector3& v1, const Vector3& v2);
+
+Vector3 operator*(const Vector3& v1, const Vector3& v2);
+
+Vector3 operator*(float s, const Vector3& v);
+
+Vector3 operator*(const Vector3& v, float s);
+
+Vector3 operator/(const Vector3& v, float s);
+
+Matrix4x4 operator+(const Matrix4x4& m1, const Matrix4x4& m2);
+
+Matrix4x4 operator-(const Matrix4x4& m1, const Matrix4x4& m2);
+
+Matrix4x4 operator*(const Matrix4x4& m1, const Matrix4x4& m2);
