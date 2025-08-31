@@ -23,7 +23,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// 平行移動
 	Vector3 translates[3] = {
-		{0.2f, 1.0f, 0.0f},
+		{0.0f, 1.0f, 0.0f},
 		{0.4f, 0.5f, 0.0f},
 		{0.3f, 0.0f, 0.0f},
 	};
@@ -107,13 +107,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Matrix4x4 viewportMatrix = MakeViewportMatrix(0, 0, float(kWindowWidth), float(kWindowHeight), 0.0f, 1.0f);
 
 		// 肩のWorldMatrix
-		Matrix4x4 shoulderWorldMatrix = MakeAffineMatrix(translates[0], rotates[0], scales[0]);
+		Matrix4x4 shoulderWorldMatrix = MakeAffineMatrix(scales[0], rotates[0], translates[0]);
 
 		// 肘のWorldMatrix
-		Matrix4x4 elbowWorldMatrix = Multiply(MakeAffineMatrix(translates[1], rotates[1], scales[1]), shoulderWorldMatrix);
+		Matrix4x4 elbowWorldMatrix = Multiply(MakeAffineMatrix(scales[1], rotates[1], translates[1]), shoulderWorldMatrix);
 
 		// 手のWorldMatrix
-		Matrix4x4 handWorldMatrix = Multiply(MakeAffineMatrix(translates[2], rotates[2], scales[2]), elbowWorldMatrix);
+		Matrix4x4 handWorldMatrix = Multiply(MakeAffineMatrix(scales[2], rotates[2], translates[2]), elbowWorldMatrix);
 
 		// 座標変換
 		Vector3 shoulderPos = Transform({ 0, 0, 0 }, shoulderWorldMatrix);
